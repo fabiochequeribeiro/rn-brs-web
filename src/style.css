@@ -1,0 +1,116 @@
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f3f6fa;color:#15202b}.app{display:flex;min-height:100vh}.sidebar{width:280px;background:#102a43;color:#fff;padding:24px;display:flex;flex-direction:column;gap:12px}.brand{display:flex;align-items:center;gap:12px;margin-bottom:28px}.logo{background:#fff;color:#102a43;font-weight:900;border-radius:14px;padding:16px}.brand span{display:block;color:#b7c9d9;font-size:13px}.sidebar button{border:0;background:transparent;color:#d9e8f5;padding:14px;border-radius:12px;text-align:left;display:flex;gap:10px;align-items:center;cursor:pointer;font-size:15px}.sidebar button.active,.sidebar button:hover{background:#1f4e79;color:#fff}main{flex:1;padding:30px;overflow:auto}h1{margin:0 0 22px}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:18px}.card{background:#fff;border-radius:18px;padding:20px;box-shadow:0 8px 22px #1232 0}.card svg{color:#1f4e79}.card span{display:block;color:#657786;font-size:13px;margin:10px 0}.card strong{font-size:24px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.panel,.form,.table{background:#fff;border-radius:18px;padding:22px;box-shadow:0 8px 22px #1232 0}.panel h2{margin:0 0 14px;font-size:18px}.alertList{display:flex;flex-direction:column;gap:10px}.alert{padding:12px;border-radius:12px;border-left:6px solid #9fb3c8;background:#f8fafc}.alert strong{display:block}.alert span,.alert em{display:block;color:#52616b;font-size:13px}.alert.critico{border-color:#d64545;background:#fff4f4}.alert.atencao{border-color:#f0a202;background:#fff9e6}.alert.ok{border-color:#2f9e44}fieldset{border:1px solid #d9e2ec;border-radius:16px;margin-bottom:18px;padding:18px}legend{font-weight:700;color:#1f4e79}.sectionGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}label{display:flex;flex-direction:column;gap:6px;font-weight:700;font-size:13px;color:#334e68}.wide{grid-column:span 4}input,select,textarea{border:1px solid #bcccdc;border-radius:10px;padding:12px;font-size:14px;background:#fff}textarea{min-height:90px}.total{align-self:end;background:#e8f1f8;padding:14px;border-radius:12px}.primary{background:#1f4e79;color:white;border:0;border-radius:12px;padding:15px 22px;font-weight:800;cursor:pointer}table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:13px;border-bottom:1px solid #edf2f7}th{color:#486581;font-size:13px}.pill{border-radius:20px;padding:6px 10px;background:#eef2f7;font-size:12px}.pill.critico{background:#ffe3e3;color:#a61b1b}.pill.atencao{background:#fff3bf;color:#8d5b00}.pill.normal{background:#e3fcec;color:#0b6b2b}@media(max-width:1000px){.cards,.grid,.sectionGrid{grid-template-columns:1fr}.sidebar{width:220px}.wide{grid-column:span 1}}
+.fotosGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-top: 12px;
+}
+
+.fotoCard {
+  background: #f8fafc;
+  border: 1px solid #d9e2ec;
+  border-radius: 14px;
+  padding: 10px;
+}
+
+.fotoCard img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.fotoCard span {
+  display: block;
+  margin-top: 8px;
+  font-size: 12px;
+  color: #52616b;
+}
+
+.acoesForm {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.secondary {
+  background: #e8f1f8;
+  color: #1f4e79;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 20px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.whatsapp {
+  background: #16a34a;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 20px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.email {
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 20px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.cabecalhoRelatorio {
+  display: none;
+}
+
+@media print {
+  .cabecalhoRelatorio {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 3px solid #0b2f4f;
+    padding-bottom: 16px;
+    margin-bottom: 24px;
+  }
+
+ .logoRelatorio img {
+  width: 180px;
+  height: auto;
+  object-fit: contain;
+}
+
+  .cabecalhoRelatorio h2 {
+    margin: 0;
+    text-transform: uppercase;
+    color: #0b2f4f;
+  }
+
+  .cabecalhoRelatorio p {
+    margin: 4px 0 0;
+    color: #334155;
+    font-weight: 700;
+  }
+}
+
+@media print {
+  .sidebar,
+  .acoesForm {
+    display: none;
+  }
+
+  main {
+    padding: 0;
+  }
+
+  .form {
+    box-shadow: none;
+  }
+}   
