@@ -535,12 +535,25 @@ function imprimirRelatorio() {
             <th>RN</th>
             <th>Cliente</th>
             <th>Origem</th>
-            <th>Categoria</th>
+            <th>Processo / Etapa</th>
             <th>Status</th>
             <th>Custo</th>
             <th>Alerta</th>
           </tr>
         </thead>
+        <tbody>
+  {rns.map((r) => (
+    <tr key={r.id || r.numero}>
+      <td>{r.numero}</td>
+      <td>{r.cliente}</td>
+      <td>{r.origem}</td>
+      <td>{r.processo} - {r.etapa}</td>
+      <td>{r.status}</td>
+      <td>{moeda(r.custo_total)}</td>
+      <td>{calcAlerta(r)}</td>
+    </tr>
+  ))}
+</tbody>
       </table>
     </div>
   </>
