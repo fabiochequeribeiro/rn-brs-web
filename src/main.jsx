@@ -147,7 +147,7 @@ async function carregarRns() {
     console.error(error);
     alert('Erro ao carregar RNs do Supabase');
     return;
-  }
+  } 
 
   setRns(data || []);
 }
