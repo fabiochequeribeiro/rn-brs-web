@@ -97,7 +97,7 @@ const initialRns = [
 ];
 
 function moeda(v){ return Number(v || 0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); }
-function calcAlerta(r) {
+function calcAlerta(r = {}) {
   if (r.status === 'Resolvido') return 'ok';
 
   const hoje = new Date();
@@ -106,8 +106,11 @@ function calcAlerta(r) {
     ? new Date(r.prazoSolucao)
     : null;
 
-  const venceuPorPrazo = prazo && hoje > prazo;
-  const venceuPorDias = Number(r.abertoHa || 0) >= 5;
+  const venceuPorPrazo =
+    prazo && hoje > prazo;
+
+  const venceuPorDias =
+    Number(r.abertoHa || 0) >= 5;
 
   if (
     venceuPorPrazo ||
@@ -126,7 +129,6 @@ function calcAlerta(r) {
 
   return 'normal';
 }
-
 function App(){
   const [tab, setTab] = useState('dashboard');
   const [rns, setRns] = useState([]);
