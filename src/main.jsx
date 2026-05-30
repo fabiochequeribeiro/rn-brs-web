@@ -141,7 +141,7 @@ async function carregarRns() {
   const { data, error } = await supabase
     .from('rn_ocorrencias')
     .select('*')
-    .order('criado_em', { ascending: false });
+    .order('id', { ascending: false });
 
   if (error) {
     console.error(error);
