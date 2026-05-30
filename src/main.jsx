@@ -535,7 +535,7 @@ function imprimirRelatorio() {
             <th>RN</th>
             <th>Cliente</th>
             <th>Origem</th>
-            <th>Processo / Etapa</th>
+            <td>{`${r.processo || ''} - ${r.etapa || ''}`}</td>
             <th>Status</th>
             <th>Custo</th>
             <th>Alerta</th>
