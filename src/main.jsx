@@ -36,11 +36,11 @@ import logoBRS from './assets/logo-brs.png';
 import { supabase } from './supabaseClient';
 
 const origemOptions = ['Interno', 'Externo'];
-const processoInternoOptions = ['Engenharia', 'Layout', 'Fábrica', 'PCP', 'Vendas'];
+const processoInternoOptions = ['Engenharia', 'Layout', 'Fábrica', 'PCP', 'Vendas', 'Expedição'];
 const processoExternoOptions = ['Transporte', 'Armazenamento', 'Montagem'];
 const engenhariaOptions = ['Projeto', 'Sem Revisão', 'Sem Cotas', 'Desenho Errado'];
 const layoutOptions = ['Erro de Projeto Civil', 'Projeto Errado', 'Cotas Erradas', 'Posição Errada', 'Equipamento Faltando', 'Revisão'];
-const fabricaOptions = ['Laser', 'Corte', 'Dobra', 'Prensa', 'Solda', 'Pintura', 'Montagem', 'Identificação', 'Expedição'];
+const fabricaOptions = ['Laser', 'Corte', 'Dobra', 'Prensa', 'Solda', 'Pintura', 'Montagem', 'Identificação'];
 const pcpOptions = ['Quantidade', 'Código Errado', 'Usinagem'];
 const vendasOptions = [
   'Especificação incorreta',
@@ -50,6 +50,14 @@ const vendasOptions = [
   'Projeto vendido divergente',
   'Falha de alinhamento comercial',
   'Pós-venda',
+];
+const expedicaoOptions = [
+  'Conferência de embarque',
+  'Embalagem / Proteção',
+  'Identificação',
+  'Carregamento',
+  'Transporte / Logística',
+  'Documentação',
 ];
 const transporteOptions = ['Avaria no transporte', 'Equipamento danificado', 'Peça danificada', 'Entrega incorreta'];
 const armazenamentoOptions = ['Avaria por armazenamento', 'Oxidação', 'Peça perdida', 'Equipamento danificado'];
@@ -244,6 +252,7 @@ function App() {
     if (processo === 'Layout') return layoutOptions;
     if (processo === 'PCP') return pcpOptions;
     if (processo === 'Vendas') return vendasOptions;
+    if (processo === 'Expedição') return expedicaoOptions;
     if (processo === 'Transporte') return transporteOptions;
     if (processo === 'Armazenamento') return armazenamentoOptions;
     if (processo === 'Montagem') return montagemExternaOptions;
