@@ -22,6 +22,7 @@ import {
   Bar,
   BarChart,
   CartesianGrid,
+  Cell,
   Line,
   LineChart,
   Pie,
@@ -65,6 +66,11 @@ const montagemExternaOptions = ['Peça Faltando', 'Peça Errada', 'Projeto Errad
 const severidadeOptions = ['Baixa', 'Média', 'Alta', 'Crítica'];
 const statusOptions = ['Aberto', 'Em análise', 'Respondido', 'Resolvido', 'Cancelado', 'Garantia negada'];
 const responsavelFinanceiroOptions = ['Garantia BRS', 'Cliente', 'Fornecedor', 'Montagem', 'Comercial', 'Rateado'];
+
+const CHART_COLORS = ['#1f4e79', '#16a34a', '#f59e0b', '#dc2626', '#7c3aed', '#0891b2', '#ea580c', '#0f766e'];
+const CHART_GRID = '#dbe7f3';
+const CHART_TEXT = '#486581';
+
 
 const initialForm = {
   status: 'Aberto',
@@ -203,7 +209,19 @@ function App() {
   const [form, setForm] = useState(initialForm);
   const [fotos, setFotos] = useState([]);
   const [rnSelecionada, setRnSelecionada] = useState(null);
-  const [resposta, setResposta] = useState({ diagnostico: '', causa_raiz: '', acao_corretiva: '', solucao_final: '', responsavel_resposta: '', status: 'Respondido' });
+  const [resposta, setResposta] = useState({
+    diagnostico: '',
+    causa_raiz: '',
+    acao_corretiva: '',
+    solucao_final: '',
+    responsavel_resposta: '',
+    status: 'Respondido',
+    responsavel_financeiro: 'Garantia BRS',
+    custo_pecas: 0,
+    custo_mao_obra: 0,
+    custo_deslocamento: 0,
+    custo_terceiros: 0,
+  });
 
   useEffect(() => {
     carregarRns();
@@ -232,6 +250,11 @@ function App() {
       solucao_final: normalizada.solucao_final || '',
       responsavel_resposta: normalizada.responsavel_resposta || '',
       status: normalizada.solucao_final ? 'Respondido' : normalizada.status || 'Em análise',
+      responsavel_financeiro: normalizada.responsavel_financeiro || 'Garantia BRS',
+      custo_pecas: Number(normalizada.custo_pecas || 0),
+      custo_mao_obra: Number(normalizada.custo_mao_obra || 0),
+      custo_deslocamento: Number(normalizada.custo_deslocamento || 0),
+      custo_terceiros: Number(normalizada.custo_terceiros || 0),
     });
     setTab('detalhe');
   }
@@ -333,12 +356,24 @@ function App() {
       return;
     }
 
+    const custoTotalResposta =
+      Number(resposta.custo_pecas || 0) +
+      Number(resposta.custo_mao_obra || 0) +
+      Number(resposta.custo_deslocamento || 0) +
+      Number(resposta.custo_terceiros || 0);
+
     const update = {
       diagnostico: resposta.diagnostico,
       causa_raiz: resposta.causa_raiz,
       acao_corretiva: resposta.acao_corretiva,
       solucao_final: resposta.solucao_final,
       responsavel_resposta: resposta.responsavel_resposta,
+      responsavel_financeiro: resposta.responsavel_financeiro || rnSelecionada.responsavel_financeiro || 'Garantia BRS',
+      custo_pecas: Number(resposta.custo_pecas || 0),
+      custo_mao_obra: Number(resposta.custo_mao_obra || 0),
+      custo_deslocamento: Number(resposta.custo_deslocamento || 0),
+      custo_terceiros: Number(resposta.custo_terceiros || 0),
+      custo_total: custoTotalResposta,
       data_resposta: rnSelecionada.data_resposta || new Date().toISOString(),
       status: resposta.status || 'Respondido',
     };
@@ -461,19 +496,38 @@ function App() {
             <section className="grid">
               <Panel title="RN por origem">
                 <ResponsiveContainer width="100%" height={260}>
-                  <BarChart data={porOrigem}><XAxis dataKey="nome" /><YAxis /><Tooltip /><Bar dataKey="qtd" radius={[6, 6, 0, 0]} /></BarChart>
+                  <BarChart data={porOrigem}>
+                    <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID} />
+                    <XAxis dataKey="nome" tick={{ fill: CHART_TEXT }} />
+                    <YAxis tick={{ fill: CHART_TEXT }} />
+                    <Tooltip />
+                    <Bar dataKey="qtd" radius={[8, 8, 0, 0]} fill="#1f4e79" />
+                  </BarChart>
                 </ResponsiveContainer>
               </Panel>
 
               <Panel title="RN por categoria">
                 <ResponsiveContainer width="100%" height={260}>
-                  <PieChart><Pie data={porCategoria} dataKey="qtd" nameKey="nome" outerRadius={90} label /><Tooltip /></PieChart>
+                  <PieChart>
+                    <Pie data={porCategoria} dataKey="qtd" nameKey="nome" outerRadius={90} label>
+                      {porCategoria.map((entry, index) => (
+                        <Cell key={`categoria-${entry.nome || index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
                 </ResponsiveContainer>
               </Panel>
 
               <Panel title="Custo mensal">
                 <ResponsiveContainer width="100%" height={260}>
-                  <LineChart data={custosMes}><CartesianGrid strokeDasharray="3 3" /><XAxis dataKey="mes" /><YAxis /><Tooltip /><Line dataKey="custo" /></LineChart>
+                  <LineChart data={custosMes}>
+                    <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID} />
+                    <XAxis dataKey="mes" tick={{ fill: CHART_TEXT }} />
+                    <YAxis tick={{ fill: CHART_TEXT }} />
+                    <Tooltip formatter={(value) => moeda(value)} />
+                    <Line type="monotone" dataKey="custo" stroke="#16a34a" strokeWidth={4} dot={{ r: 5, fill: '#16a34a' }} activeDot={{ r: 7 }} />
+                  </LineChart>
                 </ResponsiveContainer>
               </Panel>
 
@@ -534,13 +588,6 @@ function App() {
                 <Field label="ID / link Runrun.it" value={form.runrun || ''} onChange={(v) => setForm({ ...form, runrun: v })} />
                 <Field label="Prazo de resposta" type="date" value={form.prazo || somarDias(hojeISO(), 5)} onChange={(v) => setForm({ ...form, prazo: v })} />
                 <Select label="Responsável financeiro" value={form.responsavelFinanceiro} options={responsavelFinanceiroOptions} onChange={(v) => setForm({ ...form, responsavelFinanceiro: v })} />
-              </Section>
-
-              <Section title="Custos estimados">
-                <Field label="Peças R$" type="number" value={form.custoPecas} onChange={(v) => setForm({ ...form, custoPecas: v })} />
-                <Field label="Mão de obra R$" type="number" value={form.custoMaoObra} onChange={(v) => setForm({ ...form, custoMaoObra: v })} />
-                <Field label="Deslocamento R$" type="number" value={form.custoDeslocamento} onChange={(v) => setForm({ ...form, custoDeslocamento: v })} />
-                <Field label="Terceiros R$" type="number" value={form.custoTerceiros} onChange={(v) => setForm({ ...form, custoTerceiros: v })} />
               </Section>
 
               <Section title="Fotos da ocorrência">
@@ -615,6 +662,12 @@ function DetalheRn({ rn, resposta, setResposta, salvarResposta, atualizarStatus,
   const alerta = calcAlerta(rn);
   let fotos = [];
   try { fotos = rn.fotos_json ? JSON.parse(rn.fotos_json) : []; } catch { fotos = []; }
+
+  const custoTotalResposta =
+    Number(resposta.custo_pecas || 0) +
+    Number(resposta.custo_mao_obra || 0) +
+    Number(resposta.custo_deslocamento || 0) +
+    Number(resposta.custo_terceiros || 0);
 
   return (
     <div className="detalhePage">
@@ -704,6 +757,20 @@ function DetalheRn({ rn, resposta, setResposta, salvarResposta, atualizarStatus,
           <Textarea label="Solução / resposta ao problema" value={resposta.solucao_final} onChange={(v) => setResposta({ ...resposta, solucao_final: v })} />
           <Field label="Responsável pela resposta" value={resposta.responsavel_resposta} onChange={(v) => setResposta({ ...resposta, responsavel_resposta: v })} />
           <Select label="Novo status" value={resposta.status} options={statusOptions} onChange={(v) => setResposta({ ...resposta, status: v })} />
+        </div>
+
+        <h2 className="subtituloResposta">Custos da resposta</h2>
+        <p className="hint">Preencha os custos somente após a análise/execução. O total é calculado automaticamente e salvo junto com a resposta.</p>
+        <div className="sectionGrid custosRespostaGrid">
+          <Select label="Responsável financeiro" value={resposta.responsavel_financeiro} options={responsavelFinanceiroOptions} onChange={(v) => setResposta({ ...resposta, responsavel_financeiro: v })} />
+          <Field label="Peças R$" type="number" value={resposta.custo_pecas} onChange={(v) => setResposta({ ...resposta, custo_pecas: v })} />
+          <Field label="Mão de obra R$" type="number" value={resposta.custo_mao_obra} onChange={(v) => setResposta({ ...resposta, custo_mao_obra: v })} />
+          <Field label="Deslocamento R$" type="number" value={resposta.custo_deslocamento} onChange={(v) => setResposta({ ...resposta, custo_deslocamento: v })} />
+          <Field label="Terceiros R$" type="number" value={resposta.custo_terceiros} onChange={(v) => setResposta({ ...resposta, custo_terceiros: v })} />
+          <div className="infoBox destaque custoTotalResposta">
+            <span>Total calculado</span>
+            <strong>{moeda(custoTotalResposta)}</strong>
+          </div>
         </div>
         <div className="acoesForm">
           <button className="secondary" onClick={() => atualizarStatus('Em análise')}>Marcar em análise</button>
